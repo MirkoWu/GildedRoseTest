@@ -21,7 +21,7 @@ public class GildedRoseTest {
     @Test
     public void resultEqual() {
 
-        String[] names = new String[]{GildedRoseRefactor.A, GildedRoseRefactor.B, GildedRoseRefactor.S, "x"};
+        String[] names = new String[]{GildedRoseRefactor.A, GildedRoseRefactor.B, GildedRoseRefactor.S, "Conjured"};
         int[] sellIns = new int[]{12, 11, 10, 7, 6, 5, 2, 1, 0,-1 };
         int[] qualities = new int[]{  0, 1, 47, 48, 49, 50};
 
