@@ -1,10 +1,12 @@
-package com.mirkowu.gildedrose;
+package com.mirkowu.gildedrose.origin;
+
+import java.io.Serializable;
 
 /**
  * @author: mirko
  * @date: 19-11-4
  */
-public class Item {
+public class Item implements Serializable {
 
     public String name;
 
@@ -22,4 +24,5 @@ public class Item {
     public String toString() {
         return this.name + ", " + this.sellIn + ", " + this.quality;
     }
+
 }

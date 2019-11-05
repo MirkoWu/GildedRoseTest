@@ -1,12 +1,14 @@
-package com.mirkowu.gildedrose;
+package com.mirkowu.gildedrose.refactor;
 
+
+import com.mirkowu.gildedrose.origin.Item;
 
 /**
  * @author: mirko
  * @date: 19-11-4
  */
-class GildedRose2 {
-    public static final String TAG = "GildedRose2";
+public class GildedRoseRefactor {
+    public static final String TAG = "GildedRoseRefactor";
 
     public static final String A = "Aged Brie";
     public static final String B = "Backstage passes to a TAFKAL80ETC concert";
@@ -16,47 +18,13 @@ class GildedRose2 {
 
     Item[] items;
 
-    public GildedRose2(Item[] items) {
+    public GildedRoseRefactor(Item[] items) {
         this.items = items;
     }
 
     public void updateQuality() {
         for (int i = 0; i < items.length; i++) {
             Item item = items[i];
-//
-//            if (!A.equals(item.name) && !B.equals(item.name)) {
-//                if (!S.equals(item.name) && item.quality > 0) {
-//                    item.quality -= 1;
-//                }
-//            } else if (item.quality < 50) {
-//                item.quality += 1;
-//                if (B.equals(item.name)) {
-//                    if (item.sellIn < 11 && item.quality < 50) {
-//                        item.quality += 1;
-//                    }
-//
-//                    if (item.sellIn < 6 && item.quality < 50) {
-//                        item.quality += 1;
-//                    }
-//                }
-//            }
-//
-//            if (!S.equals(item.name)) {
-//                item.sellIn -= 1;
-//            }
-//
-//            if (item.sellIn < 0) {
-//                if (!A.equals(item.name)) {
-//                    if (!B.equals(item.name)
-//                            && !S.equals(item.name)
-//                            && item.quality > 0) {
-//                        item.quality -= 1;
-//                    }
-//                } else if (item.quality < 50) {
-//                    item.quality += 1;
-//                }
-//            }
-
 
             IGoods iGoods = null;
             switch (item.name) {
@@ -76,7 +44,6 @@ class GildedRose2 {
                     iGoods = new BaseGoods();
             }
 
-            iGoods.updateSellInDaily(item);
             iGoods.updateQualityDailyAll(item);
         }
 
@@ -106,14 +73,18 @@ class GildedRose2 {
 
             if (item.quality < 0) item.quality = 0;
             if (item.quality > 50) item.quality = 50;
+
+            updateSellInDaily(item);
+
+            if (item.quality > 0 && item.sellIn < 0) {
+                item.quality -= 1;
+            }
         }
 
 
         @Override
         public void updateQualityDailyOther(Item item) {
-            if (item.sellIn < 0) {
-                item.quality -= 2;
-            } else {
+            if (item.quality > 0) {
                 item.quality -= 1;
             }
         }
@@ -121,49 +92,77 @@ class GildedRose2 {
 
     class AGoods extends BaseGoods {
         @Override
+        public void updateQualityDailyAll(Item item) {
+            updateQualityDailyOther(item);
+
+            if (item.quality < 0) item.quality = 0;
+            if (item.quality > 50) item.quality = 50;
+
+        }
+
+        @Override
         public void updateQualityDailyOther(Item item) {
             if (item.quality < 50) {
                 item.quality += 1;
             }
+
+            updateSellInDaily(item);
+
+            //这里有点疑问，源代码那里是 sellIn<0 还有再加一次，文档那里没说
+            if (item.sellIn < 0 && item.quality < 50) {
+                item.quality += 1;
+            }
+
         }
     }
 
-    class BGoods extends AGoods {
+    /**
+     * B商品的疑惑，sellIn  竟然不是一开始就减少的，而是当品质增减完一波才开始计算的
+     */
+    class BGoods extends BaseGoods {
+        @Override
+        public void updateQualityDailyAll(Item item) {
+            updateQualityDailyOther(item);
+            if (item.quality < 0) item.quality = 0;
+            if (item.quality > 50) item.quality = 50;
+
+        }
+
         @Override
         public void updateQualityDailyOther(Item item) {
-            super.updateQualityDailyOther(item);
 
-            if (item.sellIn < 0) {
-                item.quality = 0;
-                return;
+            if (item.quality < 50) {
+                item.quality += 1;
             }
 
             if (item.sellIn < 11) {
-                super.updateQualityDailyOther(item);
+                item.quality += 1;
             }
 
             if (item.sellIn < 6) {
-                super.updateQualityDailyOther(item);
+                item.quality += 1;
             }
 
+            updateSellInDaily(item);
+
+            if (item.sellIn < 0) {
+                item.quality = 0;
+            }
         }
     }
 
-    class CGoods extends BaseGoods {
-        @Override
-        public void updateQualityDailyOther(Item item) {
-            super.updateQualityDailyOther(item);
-            super.updateQualityDailyOther(item);
-        }
-    }
 
     class SGoods extends BaseGoods {
         @Override
-        public void updateQualityDailyOther(Item item) {
+        public void updateQualityDailyAll(Item item) {
 
         }
+
     }
 
+    class CGoods extends BaseGoods {
+
+    }
 }
 
 

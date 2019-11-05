@@ -1,10 +1,10 @@
-package com.mirkowu.gildedrose;
+package com.mirkowu.gildedrose.origin;
 
 /**
  * @author: mirko
  * @date: 19-11-4
  */
-class GildedRose {
+public class GildedRose {
     Item[] items;
 
     public GildedRose(Item[] items) {
