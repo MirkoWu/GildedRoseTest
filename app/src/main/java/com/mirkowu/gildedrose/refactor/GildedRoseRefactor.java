@@ -162,6 +162,28 @@ public class GildedRoseRefactor {
 
     class CGoods extends BaseGoods {
 
+        //这里不太明白，先注释
+//        @Override
+//        public void updateQualityDailyAll(Item item) {
+//            updateQualityDailyOther(item);
+//
+//            if (item.quality < 0) item.quality = 0;
+//            if (item.quality > 50) item.quality = 50;
+//
+//            updateSellInDaily(item);
+//
+//            if (item.quality > 0 && item.sellIn < 0) {
+//                item.quality -= 2;//???
+//            }
+//        }
+//
+//
+//        @Override
+//        public void updateQualityDailyOther(Item item) {
+//            if (item.quality > 0) {
+//                item.quality -= 2;//????
+//            }
+//        }
     }
 }
 
